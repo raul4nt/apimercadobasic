@@ -4,7 +4,7 @@ const conexao = {
     host: 'localhost',
     port: 5432,
     user: 'postgres',
-    password: '123',
+    password: '123456',
     database: 'crudMercado'
 };
 
@@ -12,7 +12,7 @@ async function listarPedidos() {
     const cliente = new Client(conexao);
     await cliente.connect();
 
-    const sql = "SELECT * FROM pedidos ORDER BY id";
+    const sql = "SELECT * FROM pedidos";
     const result = await cliente.query(sql);
     await cliente.end();
     return result.rows;

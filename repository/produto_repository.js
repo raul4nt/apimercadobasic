@@ -4,7 +4,7 @@ const conexao = {
     host: 'localhost',
     port: 5432,
     user: 'postgres',
-    password: '123',
+    password: '123456',
     database: 'crudMercado'
 };
 
@@ -20,9 +20,9 @@ async function listarProdutos() {
 
 async function inserirProduto(produto) {
     const cliente = new Client(conexao);
-    cliente.connect();
-    const sql = "INSERT INTO produtos (nome_produto, marca, preco, pedido) VALUES ($1, $2, $3, $4) RETURNING *";
-    const values = [produto.nome, produto.marca, produto.preco, produto.pedido[0].id_pedido];
+    await cliente.connect();
+    const sql = "INSERT INTO produtos (nome_produto, marca, preco, pedido, disponivel) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+    const values = [produto.nome_produto, produto.marca, produto.preco, produto.pedido, true];
     res = await cliente.query(sql, values);
     cliente.end();
 }
@@ -42,7 +42,7 @@ async function atualizarProduto(id, produto) {
     const cliente = new Client(conexao);
     cliente.connect();
     const sql = "UPDATE produtos SET nome_produto = $1, marca = $2, preco = $3, pedido = $4 WHERE id = $5";
-    const values = [produto.nome, produto.marca, produto.preco, produto.pedido[0].id_pedido, id];
+    const values = [produto.nome_produto, produto.marca, produto.preco, produto.pedido, id];
     res = await cliente.query(sql, values);
     cliente.end();
 }

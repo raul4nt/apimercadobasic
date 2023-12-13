@@ -5,12 +5,12 @@ async function listar() {
 }
 
 async function inserir(produto) {
-  try {
+  // try 
     if (
       produto &&
-      produto.nome &&
+      produto.nome_produto &&
       produto.preco &&
-      produto.disponivel
+      produto.marca     
     ) {
       await produtoRepository.inserirProduto(produto);
     } else {
@@ -20,12 +20,12 @@ async function inserir(produto) {
           "Campos inválidos. Preencha com produto_id, quantidade e valor_total",
       };
     }
-  } catch (error) {
-    throw {
-      id: 500,
-      message: "Erro na inserção",
-    };
-  }
+//   } catch (error) {
+//     throw {
+//       id: 500,
+//       message: "Erro na inserção",
+//     };
+//   }
 }
 
 async function buscarPorId(id) {
@@ -42,7 +42,7 @@ async function atualizar(id, produto) {
   if (produtoEncontrado && produtoEncontrado.length > 0) {
     if (
       produto &&
-      produto.nome &&
+      produto.nome_produto &&
       produto.preco &&
       produto.disponivel
     ) {
@@ -71,8 +71,8 @@ async function deletar(id) {
 async function atualizarPreco(id, novoPreco) {
   const produtoEncontrado = await produtoRepository.buscarProdutoPorId(id);
   if (produtoEncontrado && produtoEncontrado.length > 0) {
-    if (novoPreco) {
-      await produtoRepository.atualizarPreco(id, novoPreco);
+    if (novoPreco != "") {
+      await produtoRepository.atualizarPreco(novoPreco, id);
     } else {
       throw {
         id: 400,

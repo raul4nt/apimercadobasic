@@ -3,8 +3,8 @@ const express = require("express");
 const router = express.Router();
 const produtoController = require("../controller/produto_controller");
 
-router.get("/atualizarPreco/:id", produtoController.atualizarPreco);
-router.get("/produtoIndisponivel/:id", produtoController.produtoIndisponivel);
+router.put("/atualizarPreco/:id", produtoController.atualizarPreco);
+router.put("/produtoIndisponivel/:id", produtoController.produtoIndisponivel);
 
 router.get("/", produtoController.listar);
 router.post("/", produtoController.inserir);

@@ -7,7 +7,7 @@ async function listar(req, res) {
 
 async function inserir(req, res) {
   let produto = req.body;
-  try {
+  try {  
     await produtoService.inserir(produto);
     res.status(201).json({ mensagem: "Seu produto foi inserido" });
   } catch (err) {
