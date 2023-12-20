@@ -1,79 +1,95 @@
-const { Client } = require('pg');
+let listaProdutos = [
+    {
+        "id": 1,
+        "nome_produto": "Smartphone",
+        "marca": "Samsung",
+        "preco": 999.99,
+        "disponivel": true
+    },
+    {
+        "id": 2,
+        "nome_produto": "Laptop",
+        "marca": "Dell",
+        "preco": 1299.99,
+        "disponivel": true
+    },
+    {
+        "id": 3,
+        "nome_produto": "Headphones",
+        "marca": "Sony",
+        "preco": 149.99,
+        "disponivel": true
+    },
+    {
+        "id": 4,
+        "nome_produto": "Smartwatch",
+        "marca": "Apple",
+        "preco": 299.99,
+        "disponivel": false
+    },
+    {
+        "id": 5,
+        "nome_produto": "Camera",
+        "marca": "Canon",
+        "preco": 599.99,
+        "disponivel": true
+    }
+];
 
-const conexao = {
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: '123456',
-    database: 'crudMercado'
-};
+let idGerador = 6;
 
-async function listarProdutos() {
-    const cliente = new Client(conexao);
-    await cliente.connect();
-
-    const sql = "SELECT * FROM produtos ORDER BY id";
-    const result = await cliente.query(sql);
-    await cliente.end();
-    return result.rows;
+function geraId() {
+    return idGerador++;
 }
 
-async function inserirProduto(produto) {
-    const cliente = new Client(conexao);
-    await cliente.connect();
-    const sql = "INSERT INTO produtos (nome_produto, marca, preco, pedido, disponivel) VALUES ($1, $2, $3, $4, $5) RETURNING *";
-    const values = [produto.nome_produto, produto.marca, produto.preco, produto.pedido, true];
-    res = await cliente.query(sql, values);
-    cliente.end();
+function listarProdutos() {
+    return listaProdutos;
 }
 
-async function buscarProdutoPorId(id) {
-    const cliente = new Client(conexao);
-    await cliente.connect();
+function inserirProduto(produto) {
+    produto.id = geraId();
+    listaProdutos.push(produto);
+}
 
-    const sql = "SELECT * FROM produtos WHERE id = $1";
-    const values = [id];
-    const result = await cliente.query(sql, values);
-    await cliente.end();
-    return result.rows;
+function buscarProdutoPorId(id) {
+    return listaProdutos.find(function(produto) {
+        return(produto.id === id);        
+    })   
 }
 
 async function atualizarProduto(id, produto) {
-    const cliente = new Client(conexao);
-    cliente.connect();
-    const sql = "UPDATE produtos SET nome_produto = $1, marca = $2, preco = $3, pedido = $4 WHERE id = $5";
-    const values = [produto.nome_produto, produto.marca, produto.preco, produto.pedido, id];
-    res = await cliente.query(sql, values);
-    cliente.end();
+    for(let ind in listaProdutos) {
+        if(listaProdutos[ind].id === id) {
+            listaProdutos[ind] = produto;
+            listaProdutos[ind].id = id;
+            return;
+        }
+    }
 }
 
 async function deletarProduto(id) {
-    const cliente = new Client(conexao);
-    cliente.connect();
-    const sql = "DELETE FROM produtos WHERE id = $1";
-    const values = [id];
-    res = await cliente.query(sql, values);
-    cliente.end();
+    for(let ind in listaProdutos) {
+        if(listaProdutos[ind].id === id) {
+            return listaProdutos.splice(ind,1)[0];
+        }
+    }
 }
 
-async function produtoIndisponivel(id) {
-    const cliente = new Client(conexao);
-    await cliente.connect();
-
-    const sql = "UPDATE produtos SET disponivel = false WHERE id = $1";
-    const values = [id];
-    await cliente.query(sql, values);
-    await cliente.end();
+function produtoIndisponivel(id) {
+    for(let ind in listaProdutos) {
+        if(listaProdutos[ind].id === id) {
+            listaProdutos[ind].disponivel = false;
+            return;
+        }
+    }
 }
-
-async function atualizarPreco(id, novoPreco) {
-    const cliente = new Client(conexao);
-    await cliente.connect();
-
-    const sql = "UPDATE produtos SET preco = $1 WHERE id = $2";
-    const values = [novoPreco, id];
-    await cliente.query(sql, values);
-    await cliente.end();
+function atualizarPreco(id, novoPreco) {
+    for(let ind in listaProdutos) {
+        if(listaProdutos[ind].id === id) {
+            listaProdutos[ind].preco = novoPreco;
+            return;
+        }
+    }
 }
 
 // ...

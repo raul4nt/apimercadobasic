@@ -1,78 +1,65 @@
 const produtoRepository = require("../repository/produto_repository");
 
-async function listar() {
-  return await produtoRepository.listarProdutos();
+ function listar() {
+  return  produtoRepository.listarProdutos();
 }
 
-async function inserir(produto) {
-  // try 
-    if (
-      produto &&
-      produto.nome_produto &&
-      produto.preco &&
-      produto.marca     
+function inserir(produto) {
+    if (produto && produto.nome_produto && produto.preco && produto.marca     
     ) {
-      await produtoRepository.inserirProduto(produto);
+      produtoRepository.inserirProduto(produto);
     } else {
       throw {
         id: 400,
         message:
-          "Campos inválidos. Preencha com produto_id, quantidade e valor_total",
+          "Campos inválidos. Preencha com nome_produto, marca e preço!",
       };
     }
-//   } catch (error) {
-//     throw {
-//       id: 500,
-//       message: "Erro na inserção",
-//     };
-//   }
 }
 
-async function buscarPorId(id) {
-  const produto = await produtoRepository.buscarProdutoPorId(id);
-  if (produto && produto.length > 0) {
+ function buscarPorId(id) {
+  const produto =  produtoRepository.buscarProdutoPorId(id);
+  if (produto ) {
     return produto;
   } else {
     throw { id: 404, message: "Este produto não existe" };
   }
 }
 
-async function atualizar(id, produto) {
-  const produtoEncontrado = await produtoRepository.buscarProdutoPorId(id);
-  if (produtoEncontrado && produtoEncontrado.length > 0) {
-    if (
-      produto &&
-      produto.nome_produto &&
-      produto.preco &&
-      produto.disponivel
-    ) {
-      await produtoRepository.atualizarProduto(id, produto);
+ function atualizar(id, produto) {
+  const produtoEncontrado =  produtoRepository.buscarProdutoPorId(id);
+  if (!produtoEncontrado) {
+    throw {id: 404, message: "Produto nao encontrado"};
+   }
+    if ( produto && produto.nome_produto && produto.marca && produto.preco) {
+       produtoRepository.atualizarProduto(id, produto);
     } else {
       throw {
-        id: 400,
-        message:
-          "Campos inválidos. Preencha com produto_id, quantidade e valor_total",
+        id: 400, message:"Campos inválidos. Preencha com nome_produto, marca e preço!",
       };
     }
-  } else {
-    throw { id: 404, message: "Este produto não existe" };
+}
+
+
+ function deletar(id) {
+  const produtoDeletado = produtoRepository.deletarProduto(id);
+  if(produtoDeletado){
+    return produtoDeletado;
+  }
+  else {
+    throw {id: 404, message: "Produto nao encontrado"};
   }
 }
 
-async function deletar(id) {
-  const produto = await produtoRepository.buscarProdutoPorId(id);
-  if (produto && produto.length > 0) {
-    await produtoRepository.deletarProduto(id);
-  } else {
-    throw { id: 404, message: "Produto não encontrado!" };
-  }
-}
 
-async function atualizarPreco(id, novoPreco) {
-  const produtoEncontrado = await produtoRepository.buscarProdutoPorId(id);
-  if (produtoEncontrado && produtoEncontrado.length > 0) {
-    if (novoPreco != "") {
-      await produtoRepository.atualizarPreco(novoPreco, id);
+ function atualizarPreco(id, novoPreco) {
+  const produtoEncontrado =  produtoRepository.buscarProdutoPorId(id);
+  if (produtoEncontrado) {
+    if (
+      novoPreco &&
+      novoPreco.preco
+    ) {
+       produtoRepository.atualizarPreco(id, novoPreco);
     } else {
       throw {
         id: 400,
@@ -85,10 +72,10 @@ async function atualizarPreco(id, novoPreco) {
   }
 }
 
-async function produtoIndisponivel(id) {
-  const produtoEncontrado = await produtoRepository.buscarProdutoPorId(id);
-  if (produtoEncontrado && produtoEncontrado.length > 0) {
-    await produtoRepository.produtoIndisponivel(id);
+ function produtoIndisponivel(id) {
+  const produtoEncontrado =  produtoRepository.buscarProdutoPorId(id);
+  if (produtoEncontrado) {
+     produtoRepository.produtoIndisponivel(id);
   } else {
     throw { id: 404, message: "Este produto não existe" };
   }
